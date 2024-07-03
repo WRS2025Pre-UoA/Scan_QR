@@ -33,7 +33,7 @@ class QRSubscriber(Node):
             print(e)
             return
         
-        qr_reader.scan_qr(cv_image)
+        cv_image=qr_reader.scan_qr(cv_image)
         
         try:
             ros_image=self.bridge.cv2_to_imgmsg(cv_image,'rgb8')
