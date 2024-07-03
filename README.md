@@ -5,11 +5,33 @@
 ### 単体
 - Python3
 - Open-CV
+- pyzbar
 
 ### ROS2
 - Python3
 - Open-CV
 - cv_bridge
+- pyzbar
+
+### 環境構築
+python3やpipのインストールは省く
+
+OpenCVのインストール
+```bash
+pip install opencv-python
+```
+
+pyzbarのインストール(mac)
+```bash
+brew install zbar
+pip3 install pyzbar
+```
+
+pyzbarのインストール(Ubuntu)
+```bash
+sudo apt install libzbar0
+pip3 install pyzbar
+```
 
 ## 初期設定
 ### 単体
