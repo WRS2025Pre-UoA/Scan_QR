@@ -1,3 +1,4 @@
+import qr_reader
 import rclpy
 from rclpy.node import Node
 
@@ -10,7 +11,6 @@ from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-import qr_reader
 
 class QRSubscriber(Node):
 
@@ -32,11 +32,11 @@ class QRSubscriber(Node):
         except CvBridgeError as e:
             print(e)
             return
-        
-        cv_image=qr_reader.scan_qr(cv_image)
-        
+
+        cv_image = qr_reader.scan_qr(cv_image)
+
         try:
-            ros_image=self.bridge.cv2_to_imgmsg(cv_image,'rgb8')
+            ros_image = self.bridge.cv2_to_imgmsg(cv_image, 'rgb8')
             self.publisher_.publish(ros_image)
         except CvBridgeError as e:
             print(e)
