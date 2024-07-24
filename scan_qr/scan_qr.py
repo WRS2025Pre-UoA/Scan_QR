@@ -1,4 +1,3 @@
-import qr_reader
 import rclpy
 from rclpy.node import Node
 
@@ -11,6 +10,7 @@ from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
+import qr_reader
 
 class QRSubscriber(Node):
 
