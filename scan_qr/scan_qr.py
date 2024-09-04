@@ -33,7 +33,14 @@ class QRSubscriber(Node):
             print(e)
             return
 
-        cv_image = qr_reader.scan_qr(cv_image)
+        cv_image, data = qr_reader.scan_qr(qr_reader.convert_image(cv_image))
+        if data == []:
+            print(f'{qr_reader.RED}読み取れませんでした{qr_reader.RESET_COLOR}')
+        elif data[0] == "":
+            print(f'{qr_reader.YELLOW}内容がわかりませんでした{qr_reader.RESET_COLOR}')
+        else:
+            text=', '.join(data)
+            print(f'{qr_reader.GREEN}内容:{text}{qr_reader.RESET_COLOR}')
 
         try:
             ros_image = self.bridge.cv2_to_imgmsg(cv_image, 'rgb8')
