@@ -10,23 +10,24 @@ GREEN = '\033[32m'
 YELLOW = '\033[33m'
 RESET_COLOR = '\033[0m'
 
+def convert_image(origin, thresh=21):
+    img = cv2.adaptiveThreshold(
+        origin, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, thresh, 2)
+
+    return img
 
 def scan_qr(image, library_type=OPENCV):
 
     if library_type == OPENCV:
-        # グレースケールに変換
-        gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
         # QRコードリーダーを作成
         qr_code_detector = cv2.QRCodeDetectorAruco()
 
         # QRコードを検出
-        data, bbox, _ = qr_code_detector.detectAndDecode(gray)
+        data, bbox, _ = qr_code_detector.detectAndDecode(image)
 
         # QRコードが検出された場合
         if bbox is not None:
-            # QRコードの内容を出力
-            print(f'{GREEN if data!="" else YELLOW}QRコードの内容: {data}{RESET_COLOR}')
 
             box = bbox[0]
             if len(box) == 4 and all(len(b) == 2 for b in box):
@@ -41,36 +42,35 @@ def scan_qr(image, library_type=OPENCV):
                     # QRコードの内容を画像に描画
                     cv2.putText(image, data, (box[0][0].astype(int), box[0][1].astype(
                         int) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            return image, [data]
         else:
-            print(f'{RED}QRコードが読み取れませんでした{RESET_COLOR}')
-        return image
+            return image, []
+
     elif library_type == ZBAR:
-        gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-        value = pyzbar.decode(gray, symbols=[pyzbar.ZBarSymbol.QRCODE])
+        value = pyzbar.decode(image, symbols=[pyzbar.ZBarSymbol.QRCODE])
 
         if value:
-            data = ""
+            data = []
             for qrcode in value:
-                data += qrcode.data.decode('utf-8')+","
+                v = qrcode.data.decode('utf-8')
+                data.append(v)
 
                 # QRコード座標取得
                 x, y, w, h = qrcode.rect
 
                 # QRコードデータ
-                cv2.putText(image, data, (x, y - 6),
+                cv2.putText(image, v, (x, y - 6),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
                 # バウンディングボックス
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-            # QRコードの内容を出力
-            print(f'{GREEN}QRコードの内容: {data}{RESET_COLOR}')
-
+            return image, data
         else:
-            print(f'{RED}QRコードが読み取れませんでした{RESET_COLOR}')
-        return image
+            return image, []
     else:
         print(f'ライブラリ{library_type}は存在しません')
+        return image, []
 
 
 if __name__ == "__main__":
@@ -80,13 +80,21 @@ if __name__ == "__main__":
                       for file in os.listdir(image_dir)]
 
     # scanの設定
-    lib_type = OPENCV
+    lib_type = ZBAR
 
     print(image_dir+"/")
     for image_path in [file for file in image_dir_list if os.path.isfile(file)]:
-        image = cv2.imread(image_path)
+        image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        image = convert_image(image, 51)
         print("  "+image_path[len(image_dir)+1:]+":\t", end="")
-        scan_qr(image, lib_type)
+        _, v = scan_qr(image, lib_type)
+        if v == []:
+            print(f'{RED}読み取れませんでした{RESET_COLOR}')
+        elif v[0] == "":
+            print(f'{YELLOW}内容がわかりませんでした{RESET_COLOR}')
+        else:
+            text=', '.join(v)
+            print(f'{GREEN}内容:{text}{RESET_COLOR}')
     print()
 
     for dir in [dir for dir in image_dir_list if os.path.isdir(dir)]:
@@ -94,7 +102,16 @@ if __name__ == "__main__":
         for file_name in os.listdir(dir):
             image_path = os.path.join(dir, file_name)
             if os.path.isfile(image_path) and file_name.endswith((".png", ".jpg", ".jpeg")):
-                image = cv2.imread(image_path)
+                image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+                image = convert_image(image, 51)
                 print("  "+file_name+":\t", end="")
-                scan_qr(image, lib_type)
+                _, v = scan_qr(image, lib_type)
+                if v == []:
+                    print(f'{RED}読み取れませんでした{RESET_COLOR}')
+                elif v[0] == "":
+                    print(f'{YELLOW}内容がわかりませんでした{RESET_COLOR}')
+                else:
+                    text=', '.join(v)
+                    print(f'{GREEN}内容:{text}{RESET_COLOR}')
+
         print()
