@@ -6,11 +6,7 @@ from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
-from pathlib import Path
-import sys
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-
-import qr_reader
+from scan_qr import qr_reader
 
 class QRSubscriber(Node):
 
@@ -43,7 +39,7 @@ class QRSubscriber(Node):
             print(f'{qr_reader.GREEN}内容:{text}{qr_reader.RESET_COLOR}')
 
         try:
-            ros_image = self.bridge.cv2_to_imgmsg(cv_image, 'rgb8')
+            ros_image = self.bridge.cv2_to_imgmsg(cv_image, 'mono8')
             self.publisher_.publish(ros_image)
         except CvBridgeError as e:
             print(e)

@@ -10,11 +10,14 @@ GREEN = '\033[32m'
 YELLOW = '\033[33m'
 RESET_COLOR = '\033[0m'
 
+
 def convert_image(origin, thresh=21):
+    gray = cv2.cvtColor(origin, cv2.COLOR_BGR2GRAY)
     img = cv2.adaptiveThreshold(
-        origin, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, thresh, 2)
+        gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, thresh, 2)
 
     return img
+
 
 def scan_qr(image, library_type=OPENCV):
 
@@ -93,7 +96,7 @@ if __name__ == "__main__":
         elif v[0] == "":
             print(f'{YELLOW}内容がわかりませんでした{RESET_COLOR}')
         else:
-            text=', '.join(v)
+            text = ', '.join(v)
             print(f'{GREEN}内容:{text}{RESET_COLOR}')
     print()
 
@@ -111,7 +114,7 @@ if __name__ == "__main__":
                 elif v[0] == "":
                     print(f'{YELLOW}内容がわかりませんでした{RESET_COLOR}')
                 else:
-                    text=', '.join(v)
+                    text = ', '.join(v)
                     print(f'{GREEN}内容:{text}{RESET_COLOR}')
 
         print()
