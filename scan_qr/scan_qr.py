@@ -58,6 +58,13 @@ class QRSubscriber(Node):
             print(e)
             return
 
+        while True:
+            cv2.imshow('QR Result', processed_image)
+            key = cv2.waitKey(10) & 0xff
+            if key != 0xff or cv2.getWindowProperty('QR Result', cv2.WND_PROP_VISIBLE) == 0:
+                cv2.destroyAllWindows()
+                break
+
 
 def main(args=None):
     rclpy.init(args=args)

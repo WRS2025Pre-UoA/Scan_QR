@@ -14,7 +14,7 @@ RESET_COLOR = '\033[0m'
 def image_resize(image, width=1280):
     h, w = image.shape[:2]
     height = round(h * (width / w))
-    image = cv2.resize(image, (width, height),interpolation=cv2.INTER_LINEAR)
+    image = cv2.resize(image, (width, height), interpolation=cv2.INTER_LINEAR)
     return image
 
 
@@ -53,7 +53,7 @@ def scan_qr(image, library_type=OPENCV, original=[]):
 
                     # QRコードの内容を画像に描画
                     cv2.putText(original, data, (box[0][0].astype(int), box[0][1].astype(
-                        int) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                        int) - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
             return original, [data]
         else:
             return original, []
