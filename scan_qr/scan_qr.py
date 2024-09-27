@@ -51,12 +51,12 @@ class QRSubscriber(Node):
             pub_data.data = ','.join(data)
             self.value_publisher.publish(pub_data)
 
-        try:
-            ros_image = self.bridge.cv2_to_imgmsg(processed_image, 'bgr8')
-            self.image_publisher.publish(ros_image)
-        except CvBridgeError as e:
-            print(e)
-            return
+            try:
+                ros_image = self.bridge.cv2_to_imgmsg(processed_image, 'bgr8')
+                self.image_publisher.publish(ros_image)
+            except CvBridgeError as e:
+                print(e)
+                return
 
         while True:
             cv2.imshow('QR Result', processed_image)
