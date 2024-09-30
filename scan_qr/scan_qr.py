@@ -36,7 +36,8 @@ class QRSubscriber(Node):
 
         original_image = cv_image.copy()
         processed_image, data = qr_reader.scan_qr(
-            qr_reader.convert_image(cv_image), qr_reader.OPENCV, original_image)
+            qr_reader.convert_image(cv_image), qr_reader.ZBAR, original_image
+        )
         if data == []:
             print(f'{qr_reader.RED}読み取れませんでした{qr_reader.RESET_COLOR}')
         elif data[0] == "":

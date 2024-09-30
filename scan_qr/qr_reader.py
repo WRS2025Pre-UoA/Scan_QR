@@ -18,7 +18,7 @@ def image_resize(image, width=1280):
     return image
 
 
-def convert_image(origin, thresh=21):
+def convert_image(origin, thresh=51):
     gray = cv2.cvtColor(origin, cv2.COLOR_BGR2GRAY)
     img = cv2.adaptiveThreshold(
         gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, thresh, 2)
@@ -97,6 +97,7 @@ if __name__ == "__main__":
     print(image_dir+"/")
     for image_path in [file for file in image_dir_list if os.path.isfile(file)]:
         image = cv2.imread(image_path)
+        image = image_resize(image, width=1280)
         image = convert_image(image, 51)
         print("  "+image_path[len(image_dir)+1:]+":\t", end="")
         _, v = scan_qr(image, lib_type)
@@ -115,6 +116,7 @@ if __name__ == "__main__":
             image_path = os.path.join(dir, file_name)
             if os.path.isfile(image_path) and file_name.endswith((".png", ".jpg", ".jpeg")):
                 image = cv2.imread(image_path)
+                image = image_resize(image, width=1280)
                 image = convert_image(image, 51)
                 print("  "+file_name+":\t", end="")
                 _, v = scan_qr(image, lib_type)
