@@ -48,6 +48,7 @@ git clone git@github.com:WRS2025Pre-UoA/Scan_QR.git
 
 ### 単体
 ```bash
+cd scan_qr
 python3 qr_reader.py
 ```
 
@@ -55,5 +56,6 @@ python3 qr_reader.py
 ワークスペースのルートディレクトリでビルド(`colcon build`)をして、以下のコマンドで実行する
 
 ```bash
-ros2 run qr_scan listener
+source install/setup.bash
+ros2 run scan_qr listener
 ```
